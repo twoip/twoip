@@ -1,7 +1,7 @@
 {
   "name": "twoip",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CLI for requests to 2ip.io",
   "author": "Igor Teplostanski <igor@teplostanski.me>",
   "license": "MIT",

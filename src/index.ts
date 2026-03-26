@@ -1,47 +1,60 @@
-import { parseEnv } from 'node:util'
-
-
 type Lang = 'en' | 'ru'
 
-interface TwoIP {
-  auth: string
+type QueryParams = {
+  token: string
   lang?: Lang
 }
 
-const BASE_API_URL = 'https://api.2ip.io'
+type TwoIP = QueryParams
 
-/*
-*/
-
-const getTokenQueryParam = (token: string) => {
-  return `?token=${token}`
+type BuildApiUrl = QueryParams & {
+  service?: string
+  address?: string
 }
 
-const getLangQueryParam = (lang?: Lang) => {
-  return lang ? `&lang=${lang}` : ''
+function buildApiUrl({ service, address, token, lang }: BuildApiUrl): string {
+  const baseUrl = 'https://api.2ip.io'
+  const path = [service, address].filter(Boolean).join('/')
+  const url = new URL(`${baseUrl}/${path}`)
+
+  url.searchParams.set('token', token)
+  if (lang) {
+    url.searchParams.set('lang', lang)
+  }
+
+  return url.toString()
 }
 
-export function twoip({ auth, lang }: TwoIP) {
-  const tokenParam = getTokenQueryParam(auth)
-  const langParam = getLangQueryParam(lang)
+export function twoip({ token, lang }: TwoIP) {
+  const ipInfo = async (ip?: string) => {
+    const url = buildApiUrl({ address: ip, token, lang })
 
-  const ipInfo = (ip?: string) => {
-    const ipEndpoint = ip ? ip : ''
+    console.log(url)
 
-    console.log(`${BASE_API_URL}/${ipEndpoint}${tokenParam}${langParam}`)
+    try {
+      const response = await fetch(url)
+
+      if (!response.ok) {
+        throw new Error(`HTTP status: ${response.status} - ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log('Response API:', data)
+
+      return data
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return { ipInfo }
 }
 
-
 if (!process.env.TSDOWN_TOKEN) {
-  throw new Error('TSDOWN_TOKEN не указан в .env');
+  throw new Error('TSDOWN_TOKEN not found in .env')
 }
 
+const { ipInfo } = twoip({ token: process.env.TSDOWN_TOKEN, lang: 'ru' })
 
-const fetch2ip = twoip({ auth: process.env.TSDOWN_TOKEN })
-
-fetch2ip.ipInfo()
-fetch2ip.ipInfo('127.0.0.1')
-console.log('hi');
+ipInfo()
+ipInfo('138.249.149.55')
