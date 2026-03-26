@@ -1,0 +1,46 @@
+{
+  "name": "twoip",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "CLI for requests to 2ip.io",
+  "author": "Igor Teplostanski <igor@teplostanski.me>",
+  "license": "MIT",
+  "homepage": "https://github.com/twoip/twoip#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twoip/twoip.git"
+  },
+  "bugs": {
+    "url": "https://github.com/twoip/twoip/issues"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch --env-file .env",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "release": "bumpp",
+    "prepublishOnly": "npm run build",
+    "format": "prettier src/**/*.ts --write --no-error-on-unmatched-pattern",
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "7.0.0-dev.20260316.1",
+    "bumpp": "^11.0.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "tsdown": "^0.21.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
